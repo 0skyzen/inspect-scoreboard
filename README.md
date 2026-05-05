@@ -1,6 +1,6 @@
 # INS Scoreboard
 
-**A modern, minimalistic and ultra-optimized scoreboard system for FiveM (ESX & QBCore) — designed for serious roleplay servers that want a clean, premium and fully customizable player list.**
+**A modern, minimalistic and ultra-optimized scoreboard system for FiveM (ESX & QBCore) designed for serious roleplay servers that want a clean, premium and fully customizable player list.**
 
 
 ---
