@@ -28,4 +28,5 @@
 
 ## Preview
 
+> [DISCORD](https://discord.gg/gmwCVW65R9)
 > ![preview](https://i.imgur.com/0L9fs38.png)
