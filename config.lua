@@ -11,7 +11,7 @@ Config.MaxPlayers = 64
 
 -- Branding
 Config.ServerName  = 'INSPECT DEVELOPMENT'
-Config.AccentColor = '#e5e7eb' -- neutral light gray (monochrome)
+Config.AccentColor = '#2563A8' -- Inspect accent blue
 Config.Discord     = 'discord.gg/inspectdev'
 
 -- How often the player list refreshes while the scoreboard is open (ms)

@@ -1,4 +1,5 @@
 local isOpen = false
+local lastPayload = nil
 
 local function sendVisible(visible)
     SendNUIMessage({
@@ -19,13 +20,21 @@ local function openScoreboard()
     if isOpen then return end
     isOpen = true
     sendVisible(true)
-    TriggerServerEvent('ins-scoreboard:requestData')
+
+    -- Render the last known list right away so the board isn't empty for a
+    -- frame while we wait for the server. The fresh data follows from subscribe.
+    if lastPayload then
+        SendNUIMessage({ action = 'updatePlayers', data = lastPayload })
+    end
+
+    TriggerServerEvent('ins-scoreboard:subscribe')
 end
 
 local function closeScoreboard()
     if not isOpen then return end
     isOpen = false
     sendVisible(false)
+    TriggerServerEvent('ins-scoreboard:unsubscribe')
 end
 
 RegisterCommand('+ins_scoreboard', openScoreboard, false)
@@ -37,9 +46,14 @@ RegisterCommand('scoreboard', function()
 end, false)
 
 RegisterNetEvent('ins-scoreboard:updateData', function(data)
-    SendNUIMessage({ action = 'updatePlayers', data = data })
+    lastPayload = data
+    if isOpen then
+        SendNUIMessage({ action = 'updatePlayers', data = data })
+    end
 end)
 
+-- Safety poll while open. The server pushes on join/leave, but this catches
+-- anything a push might miss (name changes, missed events).
 CreateThread(function()
     while true do
         if isOpen then
@@ -49,6 +63,12 @@ CreateThread(function()
             Wait(500)
         end
     end
+end)
+
+-- Prime the cache once on join so the very first open already has the list.
+CreateThread(function()
+    Wait(1000)
+    TriggerServerEvent('ins-scoreboard:requestData')
 end)
 
 RegisterNUICallback('close', function(_, cb)

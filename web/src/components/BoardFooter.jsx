@@ -1,10 +1,10 @@
 import Pager from './Pager.jsx'
 
-export default function BoardFooter({ config, total, max, page, pageCount, onPrev, onNext }) {
+export default function BoardFooter({ config, total, max, page, pageCount, onPage }) {
   const link = config.discord || config.serverName
   return (
     <div className="board-footer">
-      <Pager page={page} pageCount={pageCount} onPrev={onPrev} onNext={onNext} />
+      <Pager page={page} pageCount={pageCount} onPage={onPage} />
       <div className="board-footer__info">
         <span className="board-footer__discord">{link}</span>
         <span className="board-footer__sep">|</span>

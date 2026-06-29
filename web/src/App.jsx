@@ -5,7 +5,7 @@ import { devMockBootstrap } from './utils/devMock.js'
 
 const DEFAULT_CONFIG = {
   serverName: 'INSPECT DEVELOPMENT',
-  accentColor: '#e5e7eb',
+  accentColor: '#2563A8',
   discord: 'discord.gg/inspectdev',
   maxPlayers: 128,
   openKey: 'DELETE',

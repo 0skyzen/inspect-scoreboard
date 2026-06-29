@@ -8,10 +8,12 @@ export default function Scoreboard({ config, payload, visible }) {
   const containerRef = useRef(null)
   const total = payload.players?.length || 0
 
-  // Reset measurement on open / when player count changes
+  // Re-measure only when the board opens or the viewport resizes — how many
+  // bubbles fit depends on the container size, not on the player count. Tying
+  // it to `total` made the whole grid re-measure (and flicker) on every refresh.
   useEffect(() => {
     setPerPage(null)
-  }, [total, visible])
+  }, [visible])
 
   // Reset to first page on open
   useEffect(() => {
@@ -43,13 +45,14 @@ export default function Scoreboard({ config, payload, visible }) {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  // Arrow key navigation
   const pageCount = perPage ? Math.max(1, Math.ceil(total / perPage)) : 1
+
+  // Arrow keys still work for browser/dev previews.
   useEffect(() => {
     if (!visible) return
     const onKey = (e) => {
-      if (e.key === 'ArrowRight') setPage((p) => Math.min(pageCount - 1, p + 1))
-      else if (e.key === 'ArrowLeft') setPage((p) => Math.max(0, p - 1))
+      if (e.key === 'ArrowRight') setPage((p) => (p + 1) % pageCount)
+      else if (e.key === 'ArrowLeft') setPage((p) => (p - 1 + pageCount) % pageCount)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -62,6 +65,13 @@ export default function Scoreboard({ config, payload, visible }) {
 
   return (
     <div className={`board ${visible ? 'in' : 'out'}`}>
+      <div className="board-header">
+        <div className="board-brand">
+          <span className="board-logo">ID</span>
+          <span className="board-title">{config.serverName}</span>
+        </div>
+      </div>
+
       <Bubbles
         ref={containerRef}
         config={config}
@@ -75,8 +85,7 @@ export default function Scoreboard({ config, payload, visible }) {
         max={payload.max ?? config.maxPlayers}
         page={page}
         pageCount={pageCount}
-        onPrev={() => setPage((p) => Math.max(0, p - 1))}
-        onNext={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+        onPage={setPage}
       />
     </div>
   )
